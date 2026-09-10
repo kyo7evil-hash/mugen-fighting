@@ -22,7 +22,8 @@ import {
 
 export type Controller =
   | { kind: 'local'; player: 0 | 1 }
-  | { kind: 'cpu'; difficulty: 0 | 1 | 2 };
+  | { kind: 'cpu'; difficulty: 0 | 1 | 2 }
+  | { kind: 'dummy' }; // stands still (training)
 
 export interface MatchOpts {
   p1: string;
@@ -50,6 +51,13 @@ export class MatchRunner {
   /** external input override (netplay). Return null to stall this frame. */
   provideInputs: (() => [number, number] | null) | null = null;
   onEvent: ((tag: string) => void) | null = null;
+  /**
+   * Bits held at match start (e.g. a direction/confirm key carried over from the
+   * menus). Each stays masked out for its player until physically released once,
+   * so the fighter doesn't walk forward / act from frame 1 on its own.
+   */
+  private carryoverMask: [number, number] = [0, 0];
+  private maskPrimed = false;
 
   constructor(app: App, opts: MatchOpts) {
     this.opts = opts;
@@ -69,17 +77,31 @@ export class MatchRunner {
 
   private localBits(app: App, i: 0 | 1): number {
     const c = this.opts.controllers[i];
-    if (c.kind === 'local') return app.input.player(c.player);
+    if (c.kind === 'local') {
+      const raw = app.input.player(c.player);
+      // A carried-over bit is ignored only while it stays continuously held;
+      // release it (or press anything new) and normal input resumes.
+      this.carryoverMask[i] &= raw;
+      return raw & ~this.carryoverMask[i];
+    }
     if (c.kind === 'cpu') {
       const brain = this.brains[i]!;
       const hit = this.state.events.some((e) => e.t === 'hit' && e.attacker === i);
       return brain.think(this.state, hit);
     }
-    return 0;
+    return 0; // 'dummy' — passive
   }
 
   tick(app: App): void {
     if (this.bannerTimer > 0) this.bannerTimer--;
+
+    if (!this.maskPrimed) {
+      this.maskPrimed = true;
+      for (let i = 0 as 0 | 1; i < 2; i = (i + 1) as 0 | 1) {
+        const c = this.opts.controllers[i];
+        this.carryoverMask[i] = c.kind === 'local' ? app.input.player(c.player) : 0;
+      }
+    }
 
     let inputs: [number, number] | null;
     if (this.provideInputs) inputs = this.provideInputs();

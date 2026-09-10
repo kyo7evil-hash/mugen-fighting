@@ -143,7 +143,7 @@ export class CharSelect implements Scene {
         controllers: [
           { kind: 'local', player: 0 },
           this.mode === 'training'
-            ? { kind: 'cpu', difficulty: 0 }
+            ? { kind: 'dummy' }
             : this.opponentCpu
               ? { kind: 'cpu', difficulty: app.settings.difficulty }
               : { kind: 'local', player: 1 },

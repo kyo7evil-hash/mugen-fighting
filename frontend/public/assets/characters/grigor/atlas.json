@@ -1,0 +1,165 @@
+{
+ "id": "grigor",
+ "name": "Grigor",
+ "cell": 64,
+ "originX": 28,
+ "groundY": 60,
+ "clips": {
+  "idle": {
+   "row": 0,
+   "frames": 2,
+   "fps": 4,
+   "loop": true
+  },
+  "walk": {
+   "row": 1,
+   "frames": 2,
+   "fps": 8,
+   "loop": true
+  },
+  "backwalk": {
+   "row": 2,
+   "frames": 2,
+   "fps": 8,
+   "loop": true
+  },
+  "crouch": {
+   "row": 3,
+   "frames": 1,
+   "fps": 2,
+   "loop": false
+  },
+  "jump": {
+   "row": 4,
+   "frames": 1,
+   "fps": 2,
+   "loop": false
+  },
+  "fall": {
+   "row": 5,
+   "frames": 1,
+   "fps": 2,
+   "loop": false
+  },
+  "dash": {
+   "row": 6,
+   "frames": 2,
+   "fps": 12,
+   "loop": true
+  },
+  "backdash": {
+   "row": 7,
+   "frames": 1,
+   "fps": 10,
+   "loop": false
+  },
+  "block": {
+   "row": 8,
+   "frames": 1,
+   "fps": 2,
+   "loop": false
+  },
+  "blockcrouch": {
+   "row": 9,
+   "frames": 1,
+   "fps": 2,
+   "loop": false
+  },
+  "hit": {
+   "row": 10,
+   "frames": 2,
+   "fps": 8,
+   "loop": false
+  },
+  "airhit": {
+   "row": 11,
+   "frames": 1,
+   "fps": 4,
+   "loop": false
+  },
+  "knockdown": {
+   "row": 12,
+   "frames": 1,
+   "fps": 2,
+   "loop": false
+  },
+  "ko": {
+   "row": 13,
+   "frames": 1,
+   "fps": 2,
+   "loop": false
+  },
+  "win": {
+   "row": 14,
+   "frames": 2,
+   "fps": 3,
+   "loop": true
+  },
+  "intro": {
+   "row": 15,
+   "frames": 2,
+   "fps": 3,
+   "loop": true
+  },
+  "punch": {
+   "row": 16,
+   "frames": 3,
+   "fps": 12,
+   "loop": false
+  },
+  "punchLow": {
+   "row": 17,
+   "frames": 3,
+   "fps": 12,
+   "loop": false
+  },
+  "kick": {
+   "row": 18,
+   "frames": 3,
+   "fps": 12,
+   "loop": false
+  },
+  "kickLow": {
+   "row": 19,
+   "frames": 3,
+   "fps": 12,
+   "loop": false
+  },
+  "uppercut": {
+   "row": 20,
+   "frames": 3,
+   "fps": 13,
+   "loop": false
+  },
+  "spin": {
+   "row": 21,
+   "frames": 4,
+   "fps": 14,
+   "loop": false
+  },
+  "proj": {
+   "row": 22,
+   "frames": 3,
+   "fps": 12,
+   "loop": false
+  },
+  "grab": {
+   "row": 23,
+   "frames": 3,
+   "fps": 12,
+   "loop": false
+  },
+  "divekick": {
+   "row": 24,
+   "frames": 2,
+   "fps": 12,
+   "loop": false
+  },
+  "super": {
+   "row": 25,
+   "frames": 4,
+   "fps": 13,
+   "loop": false
+  }
+ }
+}

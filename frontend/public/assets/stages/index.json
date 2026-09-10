@@ -1,0 +1,42 @@
+[
+ {
+  "id": "dojo",
+  "name": "Ronin Dojo"
+ },
+ {
+  "id": "timberyard",
+  "name": "Timberyard"
+ },
+ {
+  "id": "ridge",
+  "name": "Windward Ridge"
+ },
+ {
+  "id": "overpass",
+  "name": "Neon Overpass"
+ },
+ {
+  "id": "harbor",
+  "name": "Iron Harbor"
+ },
+ {
+  "id": "rooftops",
+  "name": "Temple Rooftops"
+ },
+ {
+  "id": "courtyard",
+  "name": "Stone Courtyard"
+ },
+ {
+  "id": "gallery",
+  "name": "Shadow Gallery"
+ },
+ {
+  "id": "hall",
+  "name": "Duelist Hall"
+ },
+ {
+  "id": "colossus",
+  "name": "Fallen Colossus"
+ }
+]

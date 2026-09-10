@@ -1,0 +1,19 @@
+{
+ "id": "dojo",
+ "name": "Ronin Dojo",
+ "layerW": 768,
+ "layerH": 200,
+ "floorW": 960,
+ "floorH": 90,
+ "parallax": [
+  0.15,
+  0.4,
+  0.7
+ ],
+ "accent": "#b03636",
+ "music": {
+  "root": 220,
+  "mode": "minor",
+  "bpm": 92
+ }
+}

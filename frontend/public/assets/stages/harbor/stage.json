@@ -1,0 +1,19 @@
+{
+ "id": "harbor",
+ "name": "Iron Harbor",
+ "layerW": 768,
+ "layerH": 200,
+ "floorW": 960,
+ "floorH": 90,
+ "parallax": [
+  0.12,
+  0.4,
+  0.7
+ ],
+ "accent": "#e2b33b",
+ "music": {
+  "root": 175,
+  "mode": "minor",
+  "bpm": 96
+ }
+}

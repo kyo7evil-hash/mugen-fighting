@@ -5,7 +5,7 @@ import { STAGES, type StageDef } from '../shared/src/data/stages.js';
 import { encodePNG, parseHex, Pix, shade } from './png.js';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const OUT = resolve(ROOT, 'client/public/assets/stages');
+const OUT = resolve(ROOT, 'frontend/public/assets/stages');
 
 const SKY_W = 480;
 const SKY_H = 270;

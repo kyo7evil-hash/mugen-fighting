@@ -7,7 +7,7 @@ import { drawFigure, type Build, type Palette } from './figure.js';
 import { encodePNG, Pix, shade } from './png.js';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const OUT = resolve(ROOT, 'client/public/assets/characters');
+const OUT = resolve(ROOT, 'frontend/public/assets/characters');
 
 const CELL = 64;
 const ORIGIN_X = 28;

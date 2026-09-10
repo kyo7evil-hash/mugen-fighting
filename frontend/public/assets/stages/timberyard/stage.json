@@ -1,0 +1,19 @@
+{
+ "id": "timberyard",
+ "name": "Timberyard",
+ "layerW": 768,
+ "layerH": 200,
+ "floorW": 960,
+ "floorH": 90,
+ "parallax": [
+  0.12,
+  0.38,
+  0.72
+ ],
+ "accent": "#c9a24b",
+ "music": {
+  "root": 196,
+  "mode": "minor",
+  "bpm": 100
+ }
+}

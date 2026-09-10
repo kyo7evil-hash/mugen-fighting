@@ -1,0 +1,142 @@
+{
+ "clipNames": [
+  "idle",
+  "walk",
+  "backwalk",
+  "crouch",
+  "jump",
+  "fall",
+  "dash",
+  "backdash",
+  "block",
+  "blockcrouch",
+  "hit",
+  "airhit",
+  "knockdown",
+  "ko",
+  "win",
+  "intro",
+  "punch",
+  "punchLow",
+  "kick",
+  "kickLow",
+  "uppercut",
+  "spin",
+  "proj",
+  "grab",
+  "divekick",
+  "super"
+ ],
+ "characters": [
+  {
+   "id": "kaito",
+   "name": "Kaito",
+   "archetype": "All-Rounder",
+   "quote": "Balance is a blade with two edges.",
+   "bio": "A wandering swordless ronin who fights with disciplined ki. Every tool he needs, none he does not.",
+   "stage": "dojo",
+   "accent": "#3a6ea5",
+   "primary": "#d8d0c0",
+   "fullyTuned": true
+  },
+  {
+   "id": "bruno",
+   "name": "Bruno",
+   "archetype": "Grappler",
+   "quote": "Come here. This will only hurt forever.",
+   "bio": "A lumber-camp strongman. If he gets his hands on you, the round is half over.",
+   "stage": "timberyard",
+   "accent": "#c9a24b",
+   "primary": "#4a5a3a",
+   "fullyTuned": true
+  },
+  {
+   "id": "vesper",
+   "name": "Vesper",
+   "archetype": "Zoner",
+   "quote": "Every step you take is one I already aimed at.",
+   "bio": "A ridgeline hunter who has never lost a fight she started at range. Up close is another story.",
+   "stage": "ridge",
+   "accent": "#9adcff",
+   "primary": "#2f4a3a",
+   "fullyTuned": true
+  },
+  {
+   "id": "rieko",
+   "name": "Rieko",
+   "archetype": "Rushdown",
+   "quote": "Blink and you already lost.",
+   "bio": "Street-race champion turned fighter. Only knows one gear: forward.",
+   "stage": "overpass",
+   "accent": "#ffd23b",
+   "primary": "#22232a",
+   "fullyTuned": false
+  },
+  {
+   "id": "grigor",
+   "name": "Grigor",
+   "archetype": "Charge Boxer",
+   "quote": "I have been waiting. That was the whole plan.",
+   "bio": "Bare-knuckle champion of nine ports. Patient, immovable, and then suddenly on top of you.",
+   "stage": "harbor",
+   "accent": "#e2b33b",
+   "primary": "#243a52",
+   "fullyTuned": false
+  },
+  {
+   "id": "anira",
+   "name": "Anira",
+   "archetype": "Aerial",
+   "quote": "Look up. Too late.",
+   "bio": "Raised on temple rooftops. Treats the ground as a suggestion.",
+   "stage": "rooftops",
+   "accent": "#ff9edb",
+   "primary": "#6a3aa0",
+   "fullyTuned": false
+  },
+  {
+   "id": "tomas",
+   "name": "Tomas",
+   "archetype": "Stance Switcher",
+   "quote": "Which of me were you training against?",
+   "bio": "Studied two opposing schools and refused to pick one. Flows like water, then sets like stone.",
+   "stage": "courtyard",
+   "accent": "#e8e2c0",
+   "primary": "#2f6f6a",
+   "fullyTuned": false
+  },
+  {
+   "id": "nadia",
+   "name": "Nadia",
+   "archetype": "Puppeteer",
+   "quote": "We outnumber you.",
+   "bio": "Bargained with her own shadow. Now it fights beside her — on a timer, and a leash.",
+   "stage": "gallery",
+   "accent": "#8affd8",
+   "primary": "#3a2f52",
+   "fullyTuned": false
+  },
+  {
+   "id": "sable",
+   "name": "Sable",
+   "archetype": "Counter",
+   "quote": "After you.",
+   "bio": "A duelist who has made a career of the half-second after your attack misses.",
+   "stage": "hall",
+   "accent": "#d8d8e0",
+   "primary": "#20242c",
+   "fullyTuned": false
+  },
+  {
+   "id": "goliath",
+   "name": "Goliath",
+   "archetype": "Reach Bruiser",
+   "quote": "The distance was never yours to set.",
+   "bio": "Nobody agrees on what he is. Everybody agrees to stay outside his arm span.",
+   "stage": "colossus",
+   "accent": "#ff6a3b",
+   "primary": "#3a3f2a",
+   "fullyTuned": false
+  }
+ ]
+}

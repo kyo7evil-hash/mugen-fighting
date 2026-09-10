@@ -1,0 +1,19 @@
+{
+ "id": "ridge",
+ "name": "Windward Ridge",
+ "layerW": 768,
+ "layerH": 200,
+ "floorW": 960,
+ "floorH": 90,
+ "parallax": [
+  0.1,
+  0.34,
+  0.66
+ ],
+ "accent": "#9adcff",
+ "music": {
+  "root": 262,
+  "mode": "major",
+  "bpm": 108
+ }
+}

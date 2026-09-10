@@ -1,0 +1,19 @@
+{
+ "id": "courtyard",
+ "name": "Stone Courtyard",
+ "layerW": 768,
+ "layerH": 200,
+ "floorW": 960,
+ "floorH": 90,
+ "parallax": [
+  0.13,
+  0.39,
+  0.7
+ ],
+ "accent": "#e8e2c0",
+ "music": {
+  "root": 208,
+  "mode": "minor",
+  "bpm": 88
+ }
+}

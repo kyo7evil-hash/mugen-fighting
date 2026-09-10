@@ -1,0 +1,19 @@
+{
+ "id": "rooftops",
+ "name": "Temple Rooftops",
+ "layerW": 768,
+ "layerH": 200,
+ "floorW": 960,
+ "floorH": 90,
+ "parallax": [
+  0.1,
+  0.36,
+  0.68
+ ],
+ "accent": "#ff9edb",
+ "music": {
+  "root": 294,
+  "mode": "major",
+  "bpm": 116
+ }
+}

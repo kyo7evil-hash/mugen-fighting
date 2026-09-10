@@ -6,11 +6,16 @@ Training, and **online lockstep netplay**.
 
 ```
 npm install
-npm run dev        # generates assets, starts client (5173) + netplay server (8080)
+npm run dev        # generates assets, starts frontend (:5173) + backend (:8000)
 ```
 
 Open http://localhost:5173. For online, open it in two tabs/machines: one **HOST**s
 (gets a 6-char code), the other **JOIN**s with that code.
+
+Deployed on the **Substrait** platform: the `frontend/` is served static behind the
+ingress, the `backend/` (netplay relay) answers `GET /health` and the WebSocket at
+`/api/net` on `:8000`, and the platform routes `/api` → backend, everything else →
+frontend. See **Deploying** below and `CLAUDE.md`.
 
 ## Controls (default)
 
@@ -49,20 +54,23 @@ rougher. A `·` on the select screen marks the rough-tuned seven.
 ## Project layout
 
 ```
-shared/                deterministic game core (imported by client AND server)
+shared/                deterministic game core (imported by frontend AND backend)
   src/sim/             fixed-point 60 Hz sim: step.ts, state.ts, collision, motion, checksum
   src/data/            10 character move-set modules, stages, move-builder DSL
   src/protocol.ts      netplay wire messages
   test/                vitest: determinism, collision, motion, per-character smoke
-client/                Vite app
+frontend/              Vite app (the game)
+  public/assets/       generated sprite sheets + stages (committed; see gen:assets)
   src/core/            loop, canvas scaler, input (kbd+pad), audio synth, asset loader
   src/render/          stage/parallax, fighter sprites, HUD, FX, hitbox overlay
   src/game/match.ts    MatchRunner: sim + render + event/audio glue
   src/ai/cpu.ts        rule-based CPU with 3 difficulty tiers + per-character combo tables
   src/net/             WebSocket client, delay-based lockstep session
   src/scenes/          boot, menu, char select, versus, arcade, story, online, options
+backend/               Node HTTP (GET /health, /api/*) + WebSocket lockstep relay on :8000
 tools/                 procedural asset generators (PNG encoder, pixel figure, sprite/stage gen)
-server/                Node WebSocket lockstep relay (rooms by code; no simulation)
+cicd/                  Dockerfile.backend, Dockerfile.frontend, nginx.conf (Substrait deploy)
+substrait.yaml         app manifest (description) · openapi.json  backend API spec
 ```
 
 ## How it works
@@ -90,20 +98,28 @@ server/                Node WebSocket lockstep relay (rooms by code; no simulati
 
 | command | what |
 |---|---|
-| `npm run dev` | generate assets, run client + server together |
-| `npm run dev:client` / `dev:server` | run one side |
+| `npm run dev` | generate assets, run frontend + backend together |
+| `npm run dev:frontend` / `dev:backend` | run one side |
 | `npm test` | vitest suite (determinism, collision, motion, roster smoke) |
 | `npm run verify:determinism` | record an input log, replay ×2, assert equal checksums |
-| `npm run gen:assets` | regenerate sprite sheets + stages |
-| `npm run build` | typecheck, build static `client/dist`, compile `server/dist` |
+| `npm run gen:assets` | regenerate sprite sheets + stages into `frontend/public/assets` |
+| `npm run build` | gen assets, typecheck + `vite build`, typecheck backend |
 | `npm run typecheck` | whole-repo `tsc --noEmit` |
 
 ## Deploying
 
-- **Client**: `npm run build` → serve `client/dist` as static files anywhere.
-- **Server**: `node server/dist/index.js` (or `npm -w @mugen/server start`).
-  Listens on `PORT` (default 8080). Point clients at it via **Options** (the
-  `serverUrl` setting) — it defaults to `ws(s)://<page-host>:8080`.
+**Substrait** (this repo's target): `/substrait:deploy` — the app is GitHub-connected,
+so it builds the pushed `main`. `cicd/Dockerfile.backend` builds the relay
+(`EXPOSE 8000`, `GET /health`, WS at `/api/net`); `cicd/Dockerfile.frontend` builds
+the client and serves it on `:80` via nginx. The platform routes `/api` → backend and
+everything else → frontend on one host, so the client talks to the relay same-origin
+at `/api/net`. No database, no migrations. Generated art under
+`frontend/public/assets/` is committed because the frontend image build does not run
+codegen — regenerate and commit it whenever sprites change.
+
+**Anywhere else**: `npm run build`, serve `frontend/dist` static, run the backend with
+`node` (or `npm -w @mugen/backend start`) on `PORT` (default 8000). Set the client's
+`serverUrl` in **Options** if the relay isn't same-origin at `/api/net`.
 
 ## Adding a character
 
@@ -113,4 +129,4 @@ server/                Node WebSocket lockstep relay (rooms by code; no simulati
 2. Register it in `shared/src/data/index.ts` (`CHARACTERS` array).
 3. `npm run gen:assets` to produce its sprite sheet + portrait.
 4. It now appears on every select screen, the Arcade pool, and Story (add an arc in
-   `client/src/data/story.ts` for a bespoke campaign, otherwise it uses the default).
+   `frontend/src/data/story.ts` for a bespoke campaign, otherwise it uses the default).

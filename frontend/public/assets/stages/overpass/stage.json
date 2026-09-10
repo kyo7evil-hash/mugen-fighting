@@ -1,0 +1,19 @@
+{
+ "id": "overpass",
+ "name": "Neon Overpass",
+ "layerW": 768,
+ "layerH": 200,
+ "floorW": 960,
+ "floorH": 90,
+ "parallax": [
+  0.14,
+  0.42,
+  0.75
+ ],
+ "accent": "#ff3b6a",
+ "music": {
+  "root": 233,
+  "mode": "phrygian",
+  "bpm": 132
+ }
+}

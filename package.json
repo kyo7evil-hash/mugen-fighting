@@ -5,16 +5,16 @@
   "type": "module",
   "workspaces": [
     "shared",
-    "client",
-    "server"
+    "frontend",
+    "backend"
   ],
   "scripts": {
     "gen:assets": "tsx tools/gen-sprites.ts && tsx tools/gen-stages.ts",
-    "dev": "npm run gen:assets && concurrently -k -n CLIENT,SERVER -c cyan,magenta \"npm -w client run dev\" \"npm -w server run dev\"",
-    "dev:client": "npm -w client run dev",
-    "dev:server": "npm -w server run dev",
-    "build": "npm run gen:assets && npm -w client run build && npm -w server run build",
-    "preview": "npm -w client run preview",
+    "dev": "npm run gen:assets && concurrently -k -n WEB,NET -c cyan,magenta \"npm -w @mugen/frontend run dev\" \"npm -w @mugen/backend run dev\"",
+    "dev:frontend": "npm -w @mugen/frontend run dev",
+    "dev:backend": "npm -w @mugen/backend run dev",
+    "build": "npm run gen:assets && npm -w @mugen/frontend run typecheck && npm -w @mugen/frontend run build && npm -w @mugen/backend run build",
+    "preview": "npm -w @mugen/frontend run preview",
     "test": "vitest run",
     "test:watch": "vitest",
     "verify:determinism": "tsx tools/verify-determinism.ts",

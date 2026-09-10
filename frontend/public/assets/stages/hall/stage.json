@@ -1,0 +1,19 @@
+{
+ "id": "hall",
+ "name": "Duelist Hall",
+ "layerW": 768,
+ "layerH": 200,
+ "floorW": 960,
+ "floorH": 90,
+ "parallax": [
+  0.12,
+  0.38,
+  0.7
+ ],
+ "accent": "#d8d8e0",
+ "music": {
+  "root": 220,
+  "mode": "minor",
+  "bpm": 100
+ }
+}

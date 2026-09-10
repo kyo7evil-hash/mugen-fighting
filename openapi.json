@@ -1,0 +1,106 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "MUGEN Fighting Netplay Relay",
+    "version": "1.0.0",
+    "description": "Stateless lockstep-netplay relay for the MUGEN Fighting game. Pairs two players into a room by code and forwards their per-frame inputs and desync checksums over a WebSocket; no persistence, no accounts."
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Readiness probe used by the platform.",
+        "responses": {
+          "200": {
+            "description": "Service is up.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Health" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/health": {
+      "get": {
+        "summary": "Same readiness payload as /health, under the /api prefix.",
+        "responses": {
+          "200": {
+            "description": "Service is up.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Health" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/version": {
+      "get": {
+        "summary": "Report the netplay wire-protocol version this relay speaks.",
+        "responses": {
+          "200": {
+            "description": "Protocol identity.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "protocol": { "type": "integer", "description": "Lockstep protocol version." },
+                    "service": { "type": "string" }
+                  },
+                  "required": ["protocol", "service"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/rooms": {
+      "get": {
+        "summary": "Count of active rooms and connected players (diagnostics only).",
+        "responses": {
+          "200": {
+            "description": "Live relay occupancy.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "rooms": { "type": "integer", "description": "Open rooms right now." },
+                    "players": { "type": "integer", "description": "Connected players across all rooms." }
+                  },
+                  "required": ["rooms", "players"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/net": {
+      "get": {
+        "summary": "WebSocket upgrade endpoint for a lockstep netplay session.",
+        "description": "Not a REST call. Clients open a WebSocket here and exchange JSON messages: hello / create / join / select / input / checksum / ping / rematch / leave (client -> server) and hello_ok / created / joined / peer / select / start / input / checksum / desync / pong / rematch / peer_left (server -> client). The server only relays; it never simulates.",
+        "responses": {
+          "101": { "description": "Switching Protocols — WebSocket established." },
+          "426": { "description": "Upgrade Required — request was a plain GET, not a WebSocket handshake." }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Health": {
+        "type": "object",
+        "properties": {
+          "status": { "type": "string", "enum": ["ok"] },
+          "uptime": { "type": "integer", "description": "Seconds since process start." }
+        },
+        "required": ["status"]
+      }
+    }
+  }
+}

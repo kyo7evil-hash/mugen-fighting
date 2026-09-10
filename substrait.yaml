@@ -1,0 +1,7 @@
+description: >
+  MUGEN Fighting — a browser 2D fighting game (ten fighters, arcade / story /
+  local versus) plus its online multiplayer relay. The backend pairs two players
+  into a room by 6-character code and relays their per-frame inputs and periodic
+  state checksums for deterministic lockstep netplay; it holds no accounts and
+  persists nothing. For players of the game and anyone self-hosting its
+  multiplayer.

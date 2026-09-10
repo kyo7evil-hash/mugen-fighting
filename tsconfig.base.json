@@ -18,5 +18,5 @@
       "@shared/*": ["shared/src/*"]
     }
   },
-  "include": ["shared/src", "client/src", "server/src", "tools"]
+  "include": ["shared/src", "frontend/src", "backend/src", "tools"]
 }

@@ -1,0 +1,19 @@
+{
+ "id": "colossus",
+ "name": "Fallen Colossus",
+ "layerW": 768,
+ "layerH": 200,
+ "floorW": 960,
+ "floorH": 90,
+ "parallax": [
+  0.1,
+  0.35,
+  0.66
+ ],
+ "accent": "#ff6a3b",
+ "music": {
+  "root": 165,
+  "mode": "phrygian",
+  "bpm": 84
+ }
+}

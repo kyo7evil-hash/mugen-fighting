@@ -7,8 +7,8 @@ COPY shared/package.json ./shared/package.json
 COPY frontend/package.json ./frontend/package.json
 COPY backend/package.json ./backend/package.json
 RUN npm ci --no-audit --no-fund
-COPY shared ./shared
-COPY backend ./backend
+# full source (tsconfig.base.json is needed by backend/tsconfig.json's "extends")
+COPY . .
 # Bundle the backend + @mugen/shared into one file; keep 'ws' external.
 RUN npx --yes esbuild backend/src/index.ts \
       --bundle --platform=node --format=esm --target=node22 \

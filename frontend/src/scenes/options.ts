@@ -106,13 +106,21 @@ export class Options implements Scene {
     this.rebinding = actionIdx;
     const bit = ACTIONS[actionIdx][1];
     app.input.captureNext = (code: string) => {
-      // remove any existing binding to this code, then set
-      for (const k of Object.keys(app.settings.bindings.p1)) {
-        if (app.settings.bindings.p1[k] === bit) delete app.settings.bindings.p1[k];
-      }
-      app.settings.bindings.p1[code] = bit;
-      app.saveSettings();
       this.rebinding = null;
+      // Escape cancels the rebind rather than binding itself.
+      if (code === 'Escape') return;
+
+      const map = app.settings.bindings.p1;
+      const prevKeyForBit = Object.keys(map).find((k) => map[k] === bit);
+      const displaced = map[code]; // what `code` currently does, if anything
+
+      map[code] = bit;
+      if (prevKeyForBit && prevKeyForBit !== code) {
+        delete map[prevKeyForBit];
+        // If we stole `code` from another action, hand that action the freed key.
+        if (displaced !== undefined && displaced !== bit) map[prevKeyForBit] = displaced;
+      }
+      app.saveSettings();
     };
   }
 

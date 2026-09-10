@@ -72,6 +72,25 @@ function defaultServerUrl(): string {
 
 const KEY = 'mugen.settings.v1';
 
+/**
+ * Merge a saved key map with the defaults. A *rebound* action's saved keys are
+ * kept verbatim (so a rebind sticks and a removed key does NOT come back on
+ * reload); the default key is only restored for an action that ended up with no
+ * key at all (e.g. an old save from before that action existed).
+ */
+function normalizeKeyMap(saved: KeyMap | undefined, defaults: KeyMap): KeyMap {
+  if (!saved || Object.keys(saved).length === 0) return { ...defaults };
+  const map: KeyMap = { ...saved };
+  const bound = new Set(Object.values(map));
+  for (const [code, bit] of Object.entries(defaults)) {
+    if (!bound.has(bit)) {
+      map[code] = bit;
+      bound.add(bit);
+    }
+  }
+  return map;
+}
+
 export function loadSettings(): Settings {
   try {
     const raw = localStorage.getItem(KEY);
@@ -81,8 +100,8 @@ export function loadSettings(): Settings {
       ...structuredClone(DEFAULT_SETTINGS),
       ...parsed,
       bindings: {
-        p1: { ...DEFAULT_P1, ...(parsed.bindings?.p1 ?? {}) },
-        p2: { ...DEFAULT_P2, ...(parsed.bindings?.p2 ?? {}) },
+        p1: normalizeKeyMap(parsed.bindings?.p1, DEFAULT_P1),
+        p2: normalizeKeyMap(parsed.bindings?.p2, DEFAULT_P2),
       },
     };
   } catch {

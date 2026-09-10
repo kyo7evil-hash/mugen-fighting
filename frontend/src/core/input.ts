@@ -17,13 +17,25 @@ export class InputHub {
   private edgeKeys = new Set<string>();
   private padStartPrev = false;
   private padStartCur = false;
+  /** last time (ms) we saw a keydown for a code — used to auto-release stuck keys. */
+  private keySeen = new Map<string, number>();
+  /** proven that OS key-repeat is active this session (so the timeout is safe). */
+  private sawKeyRepeat = false;
+  /** per-gamepad: has the user actually pressed a button on it? */
+  private padUsed = [false, false, false, false];
   lastKey: string | null = null;
   captureNext: ((code: string) => void) | null = null;
 
   constructor(bindings: Bindings) {
     this.bindings = bindings;
     window.addEventListener('keydown', (e) => {
-      if (e.repeat) return;
+      // OS key-repeat fires keydown continuously while held; use it as a
+      // "still held" heartbeat so a lost keyup can be timed out (see sample()).
+      this.keySeen.set(e.code, performance.now());
+      if (e.repeat) {
+        this.sawKeyRepeat = true;
+        return;
+      }
       if (this.captureNext) {
         e.preventDefault();
         const cb = this.captureNext;
@@ -45,8 +57,22 @@ export class InputHub {
       )
         e.preventDefault();
     });
-    window.addEventListener('keyup', (e) => this.down.delete(e.code));
-    window.addEventListener('blur', () => this.down.clear());
+    const release = (e: KeyboardEvent): void => {
+      this.down.delete(e.code);
+      this.keySeen.delete(e.code);
+    };
+    // listen on both targets — a keyup can be missed on one when focus shifts.
+    window.addEventListener('keyup', release);
+    document.addEventListener('keyup', release);
+    const clearAll = (): void => {
+      this.down.clear();
+      this.keySeen.clear();
+    };
+    window.addEventListener('blur', clearAll);
+    window.addEventListener('pagehide', clearAll);
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) clearAll();
+    });
   }
 
   setBindings(b: Bindings): void {
@@ -57,14 +83,30 @@ export class InputHub {
     const pads = navigator.getGamepads?.() ?? [];
     const gp = pads[index];
     if (!gp) return 0;
+    const btn = (i: number): boolean => !!gp.buttons[i]?.pressed;
+
+    // A connected-but-idle controller with stick drift must not inject input.
+    // It stays inert until the user actually presses a button on it.
+    if (!this.padUsed[index]) {
+      for (let i = 0; i < gp.buttons.length; i++) {
+        if (gp.buttons[i]?.pressed) {
+          this.padUsed[index] = true;
+          break;
+        }
+      }
+      if (!this.padUsed[index]) return 0;
+    }
+
     let b = 0;
     const ax = gp.axes[0] ?? 0;
     const ay = gp.axes[1] ?? 0;
-    if (ax < -0.4) b |= IN.LEFT;
-    if (ax > 0.4) b |= IN.RIGHT;
-    if (ay < -0.4) b |= IN.UP;
-    if (ay > 0.4) b |= IN.DOWN;
-    const btn = (i: number): boolean => !!gp.buttons[i]?.pressed;
+    const DZ = 0.5; // radial deadzone
+    if (Math.hypot(ax, ay) > DZ) {
+      if (ax < -DZ) b |= IN.LEFT;
+      if (ax > DZ) b |= IN.RIGHT;
+      if (ay < -DZ) b |= IN.UP;
+      if (ay > DZ) b |= IN.DOWN;
+    }
     if (btn(12)) b |= IN.UP;
     if (btn(13)) b |= IN.DOWN;
     if (btn(14)) b |= IN.LEFT;
@@ -89,6 +131,19 @@ export class InputHub {
 
   /** Call once per sim frame BEFORE reading player(). */
   sample(): void {
+    // Auto-release keys whose keyup was lost. Only safe once we've observed OS
+    // key-repeat this session (otherwise a legitimately-held key has no
+    // heartbeat and would be dropped mid-hold).
+    if (this.sawKeyRepeat && this.down.size > 0) {
+      const now = performance.now();
+      for (const c of this.down) {
+        if (now - (this.keySeen.get(c) ?? 0) > 900) {
+          this.down.delete(c);
+          this.keySeen.delete(c);
+        }
+      }
+    }
+
     this.edgeKeys.clear();
     for (const c of this.down) if (!this.prevDown.has(c)) this.edgeKeys.add(c);
     this.prevDown = new Set(this.down);

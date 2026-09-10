@@ -5,3 +5,7 @@ description: >
   state checksums for deterministic lockstep netplay; it holds no accounts and
   persists nothing. For players of the game and anyone self-hosting its
   multiplayer.
+
+# Skill/plugin version this app was last deployed with — stamped by
+# /substrait:deploy; do not edit by hand.
+scaffold_version: 2026.08.30.104958

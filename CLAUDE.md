@@ -17,7 +17,7 @@ Browser 2D fighting game. Monorepo (npm workspaces):
 <!-- BEGIN substrait-app contract (v7) — managed by the substrait plugin (link/deploy); edits inside this block are overwritten on update. Delete the whole block to opt out. -->
 ## Substrait deployment
 
-**Linked app:** not linked yet — run /substrait:link
+**Linked app:** `mugen-fighting` — https://mugen-fighting.ninjavan.apps.substrait.build
 
 This project deploys to the **Substrait platform** (linked via the gitignored
 `.substrait/config.json`). Deploy with **`/substrait:deploy`** (packages source-only,

@@ -52,7 +52,7 @@ export class ArcadeScene implements Scene {
   tick(app: App): void {
     if (this.phase === 'card') {
       this.cardT++;
-      if (app.input.anyCancel()) {
+      if (app.input.pauseEdge()) {
         app.audio.stopMusic();
         app.replace(new MainMenu());
         return;

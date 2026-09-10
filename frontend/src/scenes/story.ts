@@ -81,7 +81,7 @@ export class StoryScene implements Scene {
     }
     if (beat.t === 'fight') return; // handled in enter
 
-    if (app.input.anyCancel()) {
+    if (app.input.pauseEdge()) {
       app.replace(new MainMenu());
       return;
     }

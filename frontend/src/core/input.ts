@@ -15,6 +15,8 @@ export class InputHub {
   private uiCur = 0;
   private prevDown = new Set<string>();
   private edgeKeys = new Set<string>();
+  private padStartPrev = false;
+  private padStartCur = false;
   lastKey: string | null = null;
   captureNext: ((code: string) => void) | null = null;
 
@@ -97,6 +99,10 @@ export class InputHub {
     ];
     this.uiPrev = this.uiCur;
     this.uiCur = this.curBits[0] | this.curBits[1] | this.padBits(0) | this.padBits(1);
+
+    this.padStartPrev = this.padStartCur;
+    const pads = navigator.getGamepads?.() ?? [];
+    this.padStartCur = !!(pads[0]?.buttons[9]?.pressed || pads[1]?.buttons[9]?.pressed);
   }
 
   player(i: 0 | 1): number {
@@ -120,8 +126,21 @@ export class InputHub {
     return this.uiPressed(IN.LP) || this.uiPressed(IN.HP) || this.uiPressed(IN.S1) || this.keyDownEdge('Enter') || this.keyDownEdge('Space');
   }
 
+  /** Menu "back": attack buttons double as cancel. Do NOT use during a live match. */
   anyCancel(): boolean {
     return this.uiPressed(IN.LK) || this.uiPressed(IN.HK) || this.keyDownEdge('Escape') || this.keyDownEdge('Backspace');
+  }
+
+  /**
+   * Gameplay pause / quit-to-menu. Escape / Backspace or the gamepad Start
+   * button only — never LK/HK, which are attack inputs during a fight.
+   */
+  pauseEdge(): boolean {
+    return (
+      this.keyDownEdge('Escape') ||
+      this.keyDownEdge('Backspace') ||
+      (this.padStartCur && !this.padStartPrev)
+    );
   }
 
   keyDownEdge(code: string): boolean {

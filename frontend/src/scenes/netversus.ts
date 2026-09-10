@@ -106,7 +106,7 @@ export class NetVersusScene implements Scene {
         this.wantRematch = true;
         this.net.ws.send({ t: 'rematch' });
       }
-      if (app.input.anyCancel()) app.replace(new MainMenu());
+      if (app.input.pauseEdge()) app.replace(new MainMenu());
     }
   }
 

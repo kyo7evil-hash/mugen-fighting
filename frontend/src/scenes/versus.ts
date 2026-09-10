@@ -83,12 +83,12 @@ export class VersusScene implements Scene {
       return;
     }
 
-    if (!this.ended && !this.opts.training && app.input.anyCancel()) {
+    if (!this.ended && !this.opts.training && app.input.pauseEdge()) {
       this.paused = true;
       app.audio.sfx('menu');
       return;
     }
-    if (this.opts.training && app.input.anyCancel()) {
+    if (this.opts.training && app.input.pauseEdge()) {
       this.quit();
       return;
     }

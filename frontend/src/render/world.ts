@@ -11,7 +11,10 @@ import {
 import type { Assets, SpriteAtlas, StageAssets } from '../core/assets.js';
 import { resolveAnim } from './anim.js';
 
-export const GROUND_SCREEN_Y = 216;
+export const GROUND_SCREEN_Y = 222;
+
+/** Camera zoom: how many screen px one sim px occupies. >1 = bigger fighters. */
+export const WORLD_SCALE = 1.45;
 
 export interface Cam {
   x: number;
@@ -20,10 +23,10 @@ export interface Cam {
 }
 
 export function worldToScreenX(xUnits: number, camX: number): number {
-  return (xUnits - camX) / UNIT + VIEW_W / 2;
+  return ((xUnits - camX) / UNIT) * WORLD_SCALE + VIEW_W / 2;
 }
 export function worldToScreenY(yUnits: number): number {
-  return GROUND_SCREEN_Y - yUnits / UNIT;
+  return GROUND_SCREEN_Y - (yUnits / UNIT) * WORLD_SCALE;
 }
 
 export function drawStage(
@@ -36,20 +39,23 @@ export function drawStage(
   const baseY = GROUND_SCREEN_Y;
   st.layers.forEach((img, i) => {
     const par = st.meta.parallax[i] ?? 0.4;
-    const w = img.width;
-    let ox = (-camX / UNIT) * par + shake.x * par;
+    const w = img.width * WORLD_SCALE;
+    const h = img.height * WORLD_SCALE;
+    let ox = (-camX / UNIT) * par * WORLD_SCALE + shake.x * par;
     ox = ((ox % w) + w) % w;
-    const y = baseY - img.height + 2 + shake.y * par;
+    const y = baseY - h + 2 + shake.y * par;
     for (let dx = -w; dx < VIEW_W + w; dx += w) {
-      ctx.drawImage(img, Math.round(dx - ox), Math.round(y));
+      ctx.drawImage(img, Math.round(dx - ox), Math.round(y), Math.ceil(w), Math.ceil(h));
     }
   });
   // floor
   const f = st.floor;
-  let fox = (-camX / UNIT) * 1 + shake.x;
-  fox = ((fox % f.width) + f.width) % f.width;
-  for (let dx = -f.width; dx < VIEW_W + f.width; dx += f.width) {
-    ctx.drawImage(f, Math.round(dx - fox), Math.round(baseY + shake.y));
+  const fw = f.width * WORLD_SCALE;
+  const fh = f.height * WORLD_SCALE;
+  let fox = (-camX / UNIT) * WORLD_SCALE + shake.x;
+  fox = ((fox % fw) + fw) % fw;
+  for (let dx = -fw; dx < VIEW_W + fw; dx += fw) {
+    ctx.drawImage(f, Math.round(dx - fox), Math.round(baseY + shake.y), Math.ceil(fw), Math.ceil(fh));
   }
 }
 
@@ -70,7 +76,7 @@ function drawSpriteFrame(
   const srcY = meta.row * cell;
   ctx.save();
   ctx.translate(Math.round(sx), Math.round(sy));
-  ctx.scale(facing, 1);
+  ctx.scale(facing * WORLD_SCALE, WORLD_SCALE);
   if (flash) ctx.filter = 'brightness(2.6) saturate(0.2)';
   ctx.drawImage(sheet, srcX, srcY, cell, cell, -atlas.originX, -atlas.groundY, cell, cell);
   ctx.restore();
@@ -87,9 +93,9 @@ export function drawFighter(
   const sy = worldToScreenY(f.y);
   // shadow
   ctx.fillStyle = 'rgba(0,0,0,0.34)';
-  const shW = f.onGround ? 20 : 12;
+  const shW = (f.onGround ? 20 : 12) * WORLD_SCALE;
   ctx.beginPath();
-  ctx.ellipse(sx, GROUND_SCREEN_Y - 1, shW, 4, 0, 0, Math.PI * 2);
+  ctx.ellipse(sx, GROUND_SCREEN_Y - 1, shW, 4 * WORLD_SCALE, 0, 0, Math.PI * 2);
   ctx.fill();
 
   // puppet
@@ -108,7 +114,7 @@ export function drawFighter(
   if (f.blockFlash > 0) {
     ctx.strokeStyle = `rgba(150,200,255,${f.blockFlash / 8})`;
     ctx.lineWidth = 1;
-    ctx.strokeRect(sx - 14, worldToScreenY(f.y) - 46, 28, 46);
+    ctx.strokeRect(sx - 14 * WORLD_SCALE, sy - 62 * WORLD_SCALE, 28 * WORLD_SCALE, 62 * WORLD_SCALE);
   }
 }
 
@@ -133,8 +139,8 @@ export function drawProjectile(
   const sx = worldToScreenX(p.x, camX);
   const sy = worldToScreenY(p.y);
   const [c0, c1] = PROJ_COLORS[p.kind] ?? ['#ffffff', '#ffffff'];
-  const w = Math.max(6, p.box.w / UNIT);
-  const h = Math.max(6, p.box.h / UNIT);
+  const w = Math.max(6, (p.box.w / UNIT) * WORLD_SCALE);
+  const h = Math.max(6, (p.box.h / UNIT) * WORLD_SCALE);
   ctx.fillStyle = c0;
   ctx.globalAlpha = 0.85;
   ctx.beginPath();
@@ -150,7 +156,7 @@ export function drawProjectile(
   ctx.globalAlpha = 0.4;
   ctx.beginPath();
   ctx.moveTo(sx, sy);
-  ctx.lineTo(sx - Math.sign(p.vx) * 10, sy);
+  ctx.lineTo(sx - Math.sign(p.vx) * 10 * WORLD_SCALE, sy);
   ctx.stroke();
   ctx.globalAlpha = 1;
 }
@@ -181,7 +187,7 @@ export function drawHitboxes(
     const py = worldToScreenY(oy + y + h);
     ctx.strokeStyle = color;
     ctx.lineWidth = 1;
-    ctx.strokeRect(px + 0.5, py + 0.5, w / UNIT, h / UNIT);
+    ctx.strokeRect(px + 0.5, py + 0.5, (w / UNIT) * WORLD_SCALE, (h / UNIT) * WORLD_SCALE);
   };
   for (const f of s.fighters) {
     // hurtbox (approx via move or stance)
@@ -205,7 +211,7 @@ export function drawSparks(ctx: CanvasRenderingContext2D, s: SimState, camX: num
     const x = worldToScreenX(sp.x, camX);
     const y = worldToScreenY(sp.y);
     const t = sp.life / 12;
-    const r = (sp.big ? 12 : 7) * (1.2 - t * 0.6);
+    const r = (sp.big ? 12 : 7) * (1.2 - t * 0.6) * WORLD_SCALE;
     if (sp.kind === 'block') {
       ctx.strokeStyle = `rgba(150,200,255,${t})`;
       for (let i = 0; i < 4; i++) {
@@ -228,7 +234,7 @@ export function drawSparks(ctx: CanvasRenderingContext2D, s: SimState, camX: num
       const a = (i / 6) * Math.PI * 2 + sp.life * 0.6;
       const rr = r * (0.6 + (i % 2) * 0.6);
       ctx.beginPath();
-      ctx.arc(x + Math.cos(a) * rr, y + Math.sin(a) * rr, 1.6, 0, Math.PI * 2);
+      ctx.arc(x + Math.cos(a) * rr, y + Math.sin(a) * rr, 1.6 * WORLD_SCALE, 0, Math.PI * 2);
       ctx.fill();
     }
     ctx.fillStyle = `rgba(255,255,255,${t})`;

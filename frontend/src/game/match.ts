@@ -1,4 +1,6 @@
 import {
+  UNIT,
+  VIEW_W,
   createInitialState,
   getCharacter,
   step,
@@ -9,6 +11,7 @@ import { CpuBrain } from '../ai/cpu.js';
 import { drawHud } from '../render/hud.js';
 import { centerText, scanlines, text } from '../render/ui.js';
 import {
+  WORLD_SCALE,
   computeShake,
   drawFighter,
   drawHitboxes,
@@ -153,8 +156,12 @@ export class MatchRunner {
     const s = this.state;
     const st = app.assets.stage(this.opts.stageId);
     const shake = computeShake(s);
-    // camera smoothing on top of sim camera
-    this.camX += (s.cameraX - this.camX) / 3;
+    // Zoom-aware camera: follow the fighters' midpoint, clamped so the view edge
+    // (narrowed by WORLD_SCALE) never passes the stage wall.
+    const mid = (s.fighters[0].x + s.fighters[1].x) / 2;
+    const lim = s.config.stageHalfWidth - (VIEW_W / 2 / WORLD_SCALE) * UNIT;
+    const target = Math.max(-lim, Math.min(lim, mid));
+    this.camX += (target - this.camX) / 6;
 
     drawStage(ctx, st, this.camX, shake);
 

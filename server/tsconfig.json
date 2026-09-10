@@ -1,0 +1,16 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "lib": ["ES2022"],
+    "types": ["node"],
+    "noEmit": false,
+    "paths": {
+      "@mugen/shared": ["../shared/src/index.ts"],
+      "@mugen/shared/*": ["../shared/src/*"]
+    }
+  },
+  "include": ["src"]
+}

@@ -1,0 +1,12 @@
+node_modules/
+dist/
+server/dist/
+client/dist/
+*.log
+.DS_Store
+client/public/assets/characters/
+client/public/assets/stages/
+client/public/assets/roster.json
+client/public/assets/generated.json
+.vite/
+coverage/
